@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Precificador Shopee e Mercado Livre</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" />
+  <meta name="theme-color" content="#dc3545" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 900px; margin: auto; }
+    input { margin: 5px 0; padding: 6px; width: 100%; }
+    .platform { margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    button { margin-top: 10px; padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>Precificador Shopee e Mercado Livre</h1>
+
+  <label>Nome do Produto:</label>
+  <input type="text" id="nomeProduto" />
+
+  <label>Custo do Produto (R$):</label>
+  <input type="text" id="custoProduto" />
+
+  <div class="platform">
+    <h3>Shopee</h3>
+    <label>Comissão (%):</label>
+    <input type="text" id="comissaoShopee" />
+    <label>Taxa Fixa (R$):</label>
+    <input type="text" id="taxaShopee" />
+  </div>
+
+  <div class="platform">
+    <h3>Mercado Livre</h3>
+    <label>Comissão (%):</label>
+    <input type="text" id="comissaoML" />
+    <label>Taxa Fixa (R$):</label>
+    <input type="text" id="taxaML" />
+  </div>
+
+  <button onclick="calcularSalvar()">Calcular e Salvar</button>
+  <button onclick="exportarCSV()">Exportar CSV</button>
+  <button onclick="exportarPDF()">Exportar PDF</button>
+
+  <table id="tabelaResultados">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Custo (R$)</th>
+        <th>Shopee (R$)</th>
+        <th>Mercado Livre (R$)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const tabela = document.querySelector("#tabelaResultados tbody");
+    let produtos = JSON.parse(localStorage.getItem("produtos_precificados") || "[]");
+
+    function sanitize(valor) {
+      return parseFloat(String(valor).replace(',', '.')) || 0;
+    }
+
+    function calcularSalvar() {
+      const nome = document.getElementById("nomeProduto").value;
+      const custo = sanitize(document.getElementById("custoProduto").value);
+      const taxaShopee = sanitize(document.getElementById("taxaShopee").value);
+      const comissaoShopee = sanitize(document.getElementById("comissaoShopee").value) / 100;
+      const taxaML = sanitize(document.getElementById("taxaML").value);
+      const comissaoML = sanitize(document.getElementById("comissaoML").value) / 100;
+
+      const precoShopee = ((custo + taxaShopee) / (1 - comissaoShopee)).toFixed(2);
+      const precoML = ((custo + taxaML) / (1 - comissaoML)).toFixed(2);
+
+      const produto = { nome, custo: custo.toFixed(2), precoShopee, precoML };
+      produtos.push(produto);
+      localStorage.setItem("produtos_precificados", JSON.stringify(produtos));
+      renderizarTabela();
+    }
+
+    function renderizarTabela() {
+      tabela.innerHTML = "";
+      produtos.forEach(p => {
+        tabela.innerHTML += `
+          <tr>
+            <td>${p.nome}</td>
+            <td>${p.custo}</td>
+            <td>${p.precoShopee}</td>
+            <td>${p.precoML}</td>
+          </tr>`;
+      });
+    }
+
+    function exportarCSV() {
+      let csv = "Produto,Custo,Shopee,ML\n";
+      produtos.forEach(p => {
+        csv += `${p.nome},${p.custo},${p.precoShopee},${p.precoML}\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "produtos_precificados.csv";
+      link.click();
+    }
+
+    function exportarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Produtos Precificados", 10, 10);
+      let y = 20;
+      produtos.forEach((p, i) => {
+        doc.text(`${i + 1}. ${p.nome} | Custo: R$${p.custo} | Shopee: R$${p.precoShopee} | ML: R$${p.precoML}`, 10, y);
+        y += 10;
+      });
+      doc.save("produtos_precificados.pdf");
+    }
+
+    renderizarTabela();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registrado'))
+        .catch(err => console.error('Erro no SW:', err));
+    }
+  </script>
+</body>
+</html>
