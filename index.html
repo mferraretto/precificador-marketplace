@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,63 +10,12 @@
   <meta name="theme-color" content="#dc3545" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-      color: #212529;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    h1 {
-      color: #dc3545;
-      text-align: center;
-    }
-    input {
-      margin: 5px 0;
-      padding: 10px;
-      width: 100%;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .platform {
-      margin-bottom: 20px;
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-    }
-    th {
-      background-color: #dc3545;
-      color: white;
-    }
-    button {
-      margin-top: 10px;
-      padding: 10px 16px;
-      background: #dc3545;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    button:hover {
-      background-color: #bb2d3b;
-    }
+    body { font-family: Arial; padding: 20px; max-width: 900px; margin: auto; }
+    input { margin: 5px 0; padding: 6px; width: 100%; }
+    .platform { margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    button { margin-top: 10px; padding: 8px 12px; }
   </style>
 </head>
 <body>
@@ -104,7 +54,6 @@
         <th>Custo (R$)</th>
         <th>Shopee (R$)</th>
         <th>Mercado Livre (R$)</th>
-        <th>Ações</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -135,24 +84,15 @@
       renderizarTabela();
     }
 
-    function excluirProduto(index) {
-      if (confirm("Deseja realmente excluir este produto?")) {
-        produtos.splice(index, 1);
-        localStorage.setItem("produtos_precificados", JSON.stringify(produtos));
-        renderizarTabela();
-      }
-    }
-
     function renderizarTabela() {
       tabela.innerHTML = "";
-      produtos.forEach((p, index) => {
+      produtos.forEach(p => {
         tabela.innerHTML += `
           <tr>
             <td>${p.nome}</td>
             <td>${p.custo}</td>
             <td>${p.precoShopee}</td>
             <td>${p.precoML}</td>
-            <td><button onclick="excluirProduto(${index})">🗑 Excluir</button></td>
           </tr>`;
       });
     }
