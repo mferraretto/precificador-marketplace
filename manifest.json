@@ -1,10 +1,11 @@
 {
-  "name": "Precificador Shopee e ML",
+  "name": "Precificador Shopee e Mercado Livre",
   "short_name": "Precificador",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#dc3545",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
