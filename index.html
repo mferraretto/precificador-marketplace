@@ -10,156 +10,163 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
   <style>
-    :root {
-      --bg: #f5f5f5;
-      --text: #333;
-      --card: #fff;
-      --accent: #dc3545;
-      --accent-hover: #c82333;
-    }
+  :root {
+    --bg: #f9f9f9;
+    --text: #212529;
+    --card: #ffffff;
+    --accent: #dc3545;
+    --accent-hover: #c82333;
+    --border: #dee2e6;
+  }
 
-    body.dark {
-      --bg: #212529;
-      --text: #f8f9fa;
-      --card: #343a40;
-      --accent: #ff4d4f;
-      --accent-hover: #e03131;
-    }
+  body.dark {
+    --bg: #1e1e1e;
+    --text: #f8f9fa;
+    --card: #2c2c2c;
+    --accent: #ff4d4f;
+    --accent-hover: #e03131;
+    --border: #444;
+  }
 
-    * {
-      box-sizing: border-box;
-    }
+  * {
+    box-sizing: border-box;
+  }
 
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 1000px;
-      margin: auto;
-      background-color: var(--bg);
-      color: var(--text);
-      transition: background 0.3s, color 0.3s;
-    }
+  body {
+    font-family: "Segoe UI", sans-serif;
+    padding: 20px;
+    max-width: 1000px;
+    margin: auto;
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+  }
 
-    h1 {
-      text-align: center;
-      color: var(--accent);
-    }
+  h1 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 25px;
+  }
 
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
+  label {
+    font-weight: 600;
+    margin-top: 12px;
+    display: block;
+  }
 
-    input {
-      margin: 5px 0 15px 0;
-      padding: 10px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background: var(--card);
-      color: var(--text);
-    }
+  input {
+    margin-top: 5px;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+  }
 
-    fieldset {
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background-color: var(--card);
-      padding: 15px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+  fieldset {
+    margin-top: 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background-color: var(--card);
+    padding: 20px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  }
 
-    legend {
-      padding: 0 10px;
-      font-weight: bold;
-      color: var(--accent);
-    }
+  legend {
+    font-weight: bold;
+    color: var(--accent);
+    padding: 0 10px;
+  }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+  }
 
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-      background-color: var(--card);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+  .top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
 
+  .top-actions button {
+    margin-left: auto;
+  }
+
+  button {
+    margin: 10px 10px 10px 0;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: var(--accent);
+    color: white;
+    transition: background-color 0.2s;
+  }
+
+  button:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .btn-excluir {
+    background-color: #6c757d;
+  }
+
+  .btn-excluir:hover {
+    background-color: #495057;
+  }
+
+  #filtro {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    width: 100%;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background-color: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  th, td {
+    border: 1px solid var(--border);
+    padding: 12px;
+    text-align: left;
+  }
+
+  th {
+    background-color: var(--accent);
+    color: #fff;
+    font-weight: bold;
+  }
+
+  @media (max-width: 600px) {
     th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: left;
-    }
-
-    th {
-      background-color: var(--accent);
-      color: #fff;
-    }
-
-    button {
-      margin: 5px 5px 15px 0;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      background-color: var(--accent);
-      color: white;
-      transition: background-color 0.2s;
-    }
-
-    button:hover {
-      background-color: var(--accent-hover);
-    }
-
-    .btn-excluir {
-      background-color: #6c757d;
-    }
-
-    .btn-excluir:hover {
-      background-color: #495057;
+      font-size: 14px;
     }
 
     .top-actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
-    .top-actions button {
-      margin-bottom: 10px;
-    }
-
-    #filtro {
-      margin: 10px 0;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+    button {
       width: 100%;
     }
-
-    @media (max-width: 600px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      table, th, td {
-        font-size: 14px;
-      }
-
-      button {
-        width: 100%;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
   <div class="top-actions">
