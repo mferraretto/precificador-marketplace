@@ -338,16 +338,56 @@
   }
 
   function exportarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("Produtos Precificados", 10, 10);
-    let y = 20;
-    produtos.forEach((p, i) => {
-      doc.text(`${i + 1}. ${p.nome} | Custo: R$${p.custo} | Shopee: R$${p.precoShopee} | Lucro: R$${p.lucroShopee} | ML: R$${p.precoML} | Lucro: R$${p.lucroML}`, 10, y);
-      y += 10;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("p", "mm", "a4");
+  const margem = 10;
+  const larguraTotal = 190;
+  const colunas = ["Produto", "Custo", "Shopee", "Lucro S.", "ML", "Lucro ML"];
+  const larguraColuna = larguraTotal / colunas.length;
+  let y = 20;
+
+  // Título
+  doc.setFontSize(16);
+  doc.setTextColor(220, 53, 69);
+  doc.text("Relatório de Produtos Precificados", margem, 15);
+
+  // Cabeçalho
+  doc.setFillColor(220, 53, 69);
+  doc.setTextColor(255, 255, 255);
+  colunas.forEach((titulo, i) => {
+    doc.rect(margem + i * larguraColuna, y, larguraColuna, 10, "F");
+    doc.text(titulo, margem + i * larguraColuna + 2, y + 7);
+  });
+
+  y += 10;
+
+  // Conteúdo
+  doc.setFontSize(11);
+  doc.setTextColor(0, 0, 0);
+
+  produtos.forEach((p, index) => {
+    const dados = [
+      p.nome.length > 15 ? p.nome.substring(0, 15) + "…" : p.nome,
+      `R$ ${p.custo}`,
+      `R$ ${p.precoShopee}`,
+      `R$ ${p.lucroShopee}`,
+      `R$ ${p.precoML}`,
+      `R$ ${p.lucroML}`
+    ];
+
+    dados.forEach((dado, i) => {
+      doc.text(dado, margem + i * larguraColuna + 2, y + 6);
     });
-    doc.save("produtos_precificados.pdf");
-  }
+
+    y += 10;
+    if (y > 280) {
+      doc.addPage();
+      y = 20;
+    }
+  });
+
+  doc.save("produtos_precificados.pdf");
+}
 
   function alternarModo() {
     document.body.classList.toggle("dark");
