@@ -302,12 +302,13 @@ function fazerLogin() {
   usuarioAtual = nome;
   localStorage.setItem("usuario_nome", nome);
   document.getElementById("telaLogin").style.display = "none";
-  document.querySelector("body > *:not(#telaLogin)").style.display = "";
+  [...document.body.children].forEach(el => {
+    if (el.id !== "telaLogin") el.style.display = "";
+  });
   carregarProdutos();
   renderizarTabela();
   document.getElementById("btnLogout").style.display = "";
 }
-
 function fazerLogout() {
   localStorage.removeItem("usuario_nome");
   location.reload();
@@ -443,16 +444,20 @@ salvarProdutos();
     });
   }
 
-  restaurarModo();
+restaurarModo();
 restaurarTaxas();
 
 if (!usuarioAtual) {
   document.getElementById("telaLogin").style.display = "block";
-  document.querySelector("body > *:not(#telaLogin)").style.display = "none";
+  [...document.body.children].forEach(el => {
+    if (el.id !== "telaLogin") el.style.display = "none";
+  });
 } else {
   document.getElementById("btnLogout").style.display = "";
   document.getElementById("telaLogin").style.display = "none";
-  document.querySelector("body > *:not(#telaLogin)").style.display = "";
+  [...document.body.children].forEach(el => {
+    if (el.id !== "telaLogin") el.style.display = "";
+  });
   carregarProdutos();
   renderizarTabela();
 }
