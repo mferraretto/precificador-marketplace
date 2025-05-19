@@ -33,7 +33,7 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
       background-color: var(--bg);
       color: var(--text);
@@ -138,6 +138,14 @@
       margin-bottom: 10px;
     }
 
+    #filtro {
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+
     @media (max-width: 600px) {
       .form-grid {
         grid-template-columns: 1fr;
@@ -158,6 +166,9 @@
     <h1>Precificador Shopee e Mercado Livre</h1>
     <button onclick="alternarModo()"><i class="fas fa-adjust"></i> Modo Claro/Escuro</button>
   </div>
+
+  <label>Filtro por nome do produto:</label>
+  <input type="text" id="filtro" oninput="filtrarTabela()" placeholder="Digite para filtrar...">
 
   <label>Nome do Produto:</label>
   <input type="text" id="nomeProduto" />
@@ -203,131 +214,165 @@
         <th>Produto</th>
         <th>Custo (R$)</th>
         <th>Shopee (R$)</th>
+        <th>Lucro Shopee</th>
         <th>Mercado Livre (R$)</th>
+        <th>Lucro ML</th>
         <th>Ações</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
+<script>
+  const tabela = document.querySelector("#tabelaResultados tbody");
+  let produtos = JSON.parse(localStorage.getItem("produtos_precificados") || "[]");
+  let editandoIndex = -1;
 
-  <script>
-    const tabela = document.querySelector("#tabelaResultados tbody");
-    let produtos = JSON.parse(localStorage.getItem("produtos_precificados") || "[]");
+  function sanitize(valor) {
+    return parseFloat(String(valor).replace(',', '.')) || 0;
+  }
 
-    function sanitize(valor) {
-      return parseFloat(String(valor).replace(',', '.')) || 0;
+  function salvarTaxas() {
+    localStorage.setItem("taxas_config", JSON.stringify({
+      comissaoShopee: document.getElementById("comissaoShopee").value,
+      taxaShopee: document.getElementById("taxaShopee").value,
+      comissaoML: document.getElementById("comissaoML").value,
+      taxaML: document.getElementById("taxaML").value
+    }));
+  }
+
+  function restaurarTaxas() {
+    const config = JSON.parse(localStorage.getItem("taxas_config") || "{}");
+    if (config.comissaoShopee) document.getElementById("comissaoShopee").value = config.comissaoShopee;
+    if (config.taxaShopee) document.getElementById("taxaShopee").value = config.taxaShopee;
+    if (config.comissaoML) document.getElementById("comissaoML").value = config.comissaoML;
+    if (config.taxaML) document.getElementById("taxaML").value = config.taxaML;
+  }
+
+  function calcularSalvar() {
+    const nome = document.getElementById("nomeProduto").value.trim();
+    const custo = sanitize(document.getElementById("custoProduto").value);
+    const taxaShopee = sanitize(document.getElementById("taxaShopee").value);
+    const comissaoShopee = sanitize(document.getElementById("comissaoShopee").value) / 100;
+    const taxaML = sanitize(document.getElementById("taxaML").value);
+    const comissaoML = sanitize(document.getElementById("comissaoML").value) / 100;
+
+    if (!nome || custo <= 0) {
+      alert("Preencha corretamente os campos obrigatórios.");
+      return;
     }
 
-    function salvarTaxas() {
-      localStorage.setItem("taxas_config", JSON.stringify({
-        comissaoShopee: document.getElementById("comissaoShopee").value,
-        taxaShopee: document.getElementById("taxaShopee").value,
-        comissaoML: document.getElementById("comissaoML").value,
-        taxaML: document.getElementById("taxaML").value
-      }));
-    }
+    salvarTaxas();
 
-    function restaurarTaxas() {
-      const config = JSON.parse(localStorage.getItem("taxas_config") || "{}");
-      if (config.comissaoShopee) document.getElementById("comissaoShopee").value = config.comissaoShopee;
-      if (config.taxaShopee) document.getElementById("taxaShopee").value = config.taxaShopee;
-      if (config.comissaoML) document.getElementById("comissaoML").value = config.comissaoML;
-      if (config.taxaML) document.getElementById("taxaML").value = config.taxaML;
-    }
+    const precoShopee = ((custo + taxaShopee) / (1 - comissaoShopee)).toFixed(2);
+    const precoML = ((custo + taxaML) / (1 - comissaoML)).toFixed(2);
+    const lucroShopee = (precoShopee - custo).toFixed(2);
+    const lucroML = (precoML - custo).toFixed(2);
 
-    function calcularSalvar() {
-      const nome = document.getElementById("nomeProduto").value.trim();
-      const custo = sanitize(document.getElementById("custoProduto").value);
-      const taxaShopee = sanitize(document.getElementById("taxaShopee").value);
-      const comissaoShopee = sanitize(document.getElementById("comissaoShopee").value) / 100;
-      const taxaML = sanitize(document.getElementById("taxaML").value);
-      const comissaoML = sanitize(document.getElementById("comissaoML").value) / 100;
+    const produto = { nome, custo: custo.toFixed(2), precoShopee, precoML, lucroShopee, lucroML };
 
-      if (!nome || custo <= 0) {
-        alert("Preencha corretamente os campos obrigatórios.");
-        return;
-      }
-
-      salvarTaxas();
-
-      const precoShopee = ((custo + taxaShopee) / (1 - comissaoShopee)).toFixed(2);
-      const precoML = ((custo + taxaML) / (1 - comissaoML)).toFixed(2);
-
-      const produto = { nome, custo: custo.toFixed(2), precoShopee, precoML };
+    if (editandoIndex >= 0) {
+      produtos[editandoIndex] = produto;
+      editandoIndex = -1;
+    } else {
       produtos.push(produto);
+    }
+
+    localStorage.setItem("produtos_precificados", JSON.stringify(produtos));
+    document.getElementById("nomeProduto").value = "";
+    document.getElementById("custoProduto").value = "";
+    renderizarTabela();
+  }
+
+  function excluirProduto(index) {
+    if (confirm("Deseja realmente excluir este produto?")) {
+      produtos.splice(index, 1);
       localStorage.setItem("produtos_precificados", JSON.stringify(produtos));
       renderizarTabela();
     }
+  }
 
-    function excluirProduto(index) {
-      if (confirm("Deseja realmente excluir este produto?")) {
-        produtos.splice(index, 1);
-        localStorage.setItem("produtos_precificados", JSON.stringify(produtos));
-        renderizarTabela();
-      }
+  function editarProduto(index) {
+    const p = produtos[index];
+    document.getElementById("nomeProduto").value = p.nome;
+    document.getElementById("custoProduto").value = p.custo;
+    editandoIndex = index;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderizarTabela() {
+    tabela.innerHTML = "";
+    produtos.forEach((p, index) => {
+      tabela.innerHTML += `
+        <tr>
+          <td>${p.nome}</td>
+          <td>R$ ${p.custo}</td>
+          <td>R$ ${p.precoShopee}</td>
+          <td>R$ ${p.lucroShopee}</td>
+          <td>R$ ${p.precoML}</td>
+          <td>R$ ${p.lucroML}</td>
+          <td>
+            <button onclick="editarProduto(${index})"><i class="fas fa-edit"></i> Editar</button>
+            <button class="btn-excluir" onclick="excluirProduto(${index})"><i class="fas fa-trash-alt"></i> Excluir</button>
+          </td>
+        </tr>`;
+    });
+  }
+
+  function exportarCSV() {
+    let csv = "Produto,Custo,Shopee,Lucro Shopee,ML,Lucro ML\n";
+    produtos.forEach(p => {
+      csv += `${p.nome},${p.custo},${p.precoShopee},${p.lucroShopee},${p.precoML},${p.lucroML}\n`;
+    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "produtos_precificados.csv";
+    link.click();
+  }
+
+  function exportarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("Produtos Precificados", 10, 10);
+    let y = 20;
+    produtos.forEach((p, i) => {
+      doc.text(`${i + 1}. ${p.nome} | Custo: R$${p.custo} | Shopee: R$${p.precoShopee} | Lucro: R$${p.lucroShopee} | ML: R$${p.precoML} | Lucro: R$${p.lucroML}`, 10, y);
+      y += 10;
+    });
+    doc.save("produtos_precificados.pdf");
+  }
+
+  function alternarModo() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("modo_escuro", document.body.classList.contains("dark") ? "1" : "0");
+  }
+
+  function restaurarModo() {
+    const escuro = localStorage.getItem("modo_escuro");
+    if (escuro === "1") {
+      document.body.classList.add("dark");
     }
+  }
 
-    function renderizarTabela() {
-      tabela.innerHTML = "";
-      produtos.forEach((p, index) => {
-        tabela.innerHTML += 
-          <tr>
-            <td>${p.nome}</td>
-            <td>R$ ${p.custo}</td>
-            <td>R$ ${p.precoShopee}</td>
-            <td>R$ ${p.precoML}</td>
-            <td><button class="btn-excluir" onclick="excluirProduto(${index})"><i class="fas fa-trash-alt"></i> Excluir</button></td>
-          </tr>;
-      });
-    }
+  function filtrarTabela() {
+    const filtro = document.getElementById("filtro").value.toLowerCase();
+    const linhas = tabela.querySelectorAll("tr");
+    linhas.forEach(linha => {
+      const nome = linha.children[0]?.textContent?.toLowerCase() || "";
+      linha.style.display = nome.includes(filtro) ? "" : "none";
+    });
+  }
 
-    function exportarCSV() {
-      let csv = "Produto,Custo,Shopee,ML\n";
-      produtos.forEach(p => {
-        csv += ${p.nome},${p.custo},${p.precoShopee},${p.precoML}\n;
-      });
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "produtos_precificados.csv";
-      link.click();
-    }
-
-    function exportarPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.text("Produtos Precificados", 10, 10);
-      let y = 20;
-      produtos.forEach((p, i) => {
-        doc.text(${i + 1}. ${p.nome} | Custo: R$${p.custo} | Shopee: R$${p.precoShopee} | ML: R$${p.precoML}, 10, y);
-        y += 10;
-      });
-      doc.save("produtos_precificados.pdf");
-    }
-
-    function alternarModo() {
-      document.body.classList.toggle("dark");
-      localStorage.setItem("modo_escuro", document.body.classList.contains("dark") ? "1" : "0");
-    }
-
-    function restaurarModo() {
-      const escuro = localStorage.getItem("modo_escuro");
-      if (escuro === "1") {
-        document.body.classList.add("dark");
-      }
-    }
-
-    renderizarTabela();
-    restaurarTaxas();
-    restaurarModo();
-  </script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('Service Worker registrado'))
-        .catch(err => console.error('Erro no SW:', err));
-    }
-  </script>
+  renderizarTabela();
+  restaurarTaxas();
+  restaurarModo();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('Service Worker registrado'))
+      .catch(err => console.error('Erro no SW:', err));
+  }
+</script>
 </body>
 </html>
