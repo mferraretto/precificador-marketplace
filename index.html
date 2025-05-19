@@ -8,7 +8,24 @@
   <link rel="icon" href="icon-192.png" />
   <meta name="theme-color" content="#dc3545" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
   <style>
+    :root {
+      --bg: #f5f5f5;
+      --text: #333;
+      --card: #fff;
+      --accent: #dc3545;
+      --accent-hover: #c82333;
+    }
+
+    body.dark {
+      --bg: #212529;
+      --text: #f8f9fa;
+      --card: #343a40;
+      --accent: #ff4d4f;
+      --accent-hover: #e03131;
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -18,13 +35,14 @@
       padding: 20px;
       max-width: 900px;
       margin: auto;
-      background-color: #f5f5f5;
-      color: #333;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
     }
 
     h1 {
       text-align: center;
-      color: #dc3545;
+      color: var(--accent);
     }
 
     label {
@@ -39,22 +57,36 @@
       width: 100%;
       border: 1px solid #ccc;
       border-radius: 6px;
+      background: var(--card);
+      color: var(--text);
     }
 
-    .platform {
+    fieldset {
       margin-bottom: 20px;
       border: 1px solid #ccc;
-      padding: 15px;
       border-radius: 10px;
-      background-color: #fff;
+      background-color: var(--card);
+      padding: 15px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    legend {
+      padding: 0 10px;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
     }
 
     table {
       width: 100%;
       margin-top: 20px;
       border-collapse: collapse;
-      background-color: #fff;
+      background-color: var(--card);
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -67,7 +99,7 @@
     }
 
     th {
-      background-color: #dc3545;
+      background-color: var(--accent);
       color: #fff;
     }
 
@@ -78,13 +110,13 @@
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      background-color: #dc3545;
+      background-color: var(--accent);
       color: white;
       transition: background-color 0.2s;
     }
 
     button:hover {
-      background-color: #c82333;
+      background-color: var(--accent-hover);
     }
 
     .btn-excluir {
@@ -94,10 +126,38 @@
     .btn-excluir:hover {
       background-color: #495057;
     }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-actions button {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      table, th, td {
+        font-size: 14px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Precificador Shopee e Mercado Livre</h1>
+  <div class="top-actions">
+    <h1>Precificador Shopee e Mercado Livre</h1>
+    <button onclick="alternarModo()"><i class="fas fa-adjust"></i> Modo Claro/Escuro</button>
+  </div>
 
   <label>Nome do Produto:</label>
   <input type="text" id="nomeProduto" />
@@ -105,25 +165,37 @@
   <label>Custo do Produto (R$):</label>
   <input type="text" id="custoProduto" />
 
-  <div class="platform">
-    <h3>Shopee</h3>
-    <label>Comissão (%):</label>
-    <input type="text" id="comissaoShopee" />
-    <label>Taxa Fixa (R$):</label>
-    <input type="text" id="taxaShopee" />
-  </div>
+  <fieldset>
+    <legend>Shopee</legend>
+    <div class="form-grid">
+      <div>
+        <label>Comissão (%):</label>
+        <input type="text" id="comissaoShopee" />
+      </div>
+      <div>
+        <label>Taxa Fixa (R$):</label>
+        <input type="text" id="taxaShopee" />
+      </div>
+    </div>
+  </fieldset>
 
-  <div class="platform">
-    <h3>Mercado Livre</h3>
-    <label>Comissão (%):</label>
-    <input type="text" id="comissaoML" />
-    <label>Taxa Fixa (R$):</label>
-    <input type="text" id="taxaML" />
-  </div>
+  <fieldset>
+    <legend>Mercado Livre</legend>
+    <div class="form-grid">
+      <div>
+        <label>Comissão (%):</label>
+        <input type="text" id="comissaoML" />
+      </div>
+      <div>
+        <label>Taxa Fixa (R$):</label>
+        <input type="text" id="taxaML" />
+      </div>
+    </div>
+  </fieldset>
 
-  <button onclick="calcularSalvar()">Calcular e Salvar</button>
-  <button onclick="exportarCSV()">Exportar CSV</button>
-  <button onclick="exportarPDF()">Exportar PDF</button>
+  <button onclick="calcularSalvar()"><i class="fas fa-save"></i> Calcular e Salvar</button>
+  <button onclick="exportarCSV()"><i class="fas fa-file-csv"></i> Exportar CSV</button>
+  <button onclick="exportarPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
 
   <table id="tabelaResultados">
     <thead>
@@ -146,6 +218,23 @@
       return parseFloat(String(valor).replace(',', '.')) || 0;
     }
 
+    function salvarTaxas() {
+      localStorage.setItem("taxas_config", JSON.stringify({
+        comissaoShopee: document.getElementById("comissaoShopee").value,
+        taxaShopee: document.getElementById("taxaShopee").value,
+        comissaoML: document.getElementById("comissaoML").value,
+        taxaML: document.getElementById("taxaML").value
+      }));
+    }
+
+    function restaurarTaxas() {
+      const config = JSON.parse(localStorage.getItem("taxas_config") || "{}");
+      if (config.comissaoShopee) document.getElementById("comissaoShopee").value = config.comissaoShopee;
+      if (config.taxaShopee) document.getElementById("taxaShopee").value = config.taxaShopee;
+      if (config.comissaoML) document.getElementById("comissaoML").value = config.comissaoML;
+      if (config.taxaML) document.getElementById("taxaML").value = config.taxaML;
+    }
+
     function calcularSalvar() {
       const nome = document.getElementById("nomeProduto").value.trim();
       const custo = sanitize(document.getElementById("custoProduto").value);
@@ -158,6 +247,8 @@
         alert("Preencha corretamente os campos obrigatórios.");
         return;
       }
+
+      salvarTaxas();
 
       const precoShopee = ((custo + taxaShopee) / (1 - comissaoShopee)).toFixed(2);
       const precoML = ((custo + taxaML) / (1 - comissaoML)).toFixed(2);
@@ -185,7 +276,7 @@
             <td>R$ ${p.custo}</td>
             <td>R$ ${p.precoShopee}</td>
             <td>R$ ${p.precoML}</td>
-            <td><button class="btn-excluir" onclick="excluirProduto(${index})">Excluir</button></td>
+            <td><button class="btn-excluir" onclick="excluirProduto(${index})"><i class="fas fa-trash-alt"></i> Excluir</button></td>
           </tr>`;
       });
     }
@@ -214,7 +305,21 @@
       doc.save("produtos_precificados.pdf");
     }
 
+    function alternarModo() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("modo_escuro", document.body.classList.contains("dark") ? "1" : "0");
+    }
+
+    function restaurarModo() {
+      const escuro = localStorage.getItem("modo_escuro");
+      if (escuro === "1") {
+        document.body.classList.add("dark");
+      }
+    }
+
     renderizarTabela();
+    restaurarTaxas();
+    restaurarModo();
   </script>
 
   <script>
