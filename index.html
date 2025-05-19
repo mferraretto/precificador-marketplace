@@ -3,241 +3,291 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Precificador Shopee e Mercado Livre</title>
-  <link rel="manifest" href="manifest.json" />
+  <title>Precificador Shopee/ML</title>
   <link rel="icon" href="icon-192.png" />
-  <meta name="theme-color" content="#dc3545" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <style>
-  :root {
-    --bg: #f9f9f9;
-    --text: #212529;
-    --card: #ffffff;
-    --accent: #dc3545;
-    --accent-hover: #c82333;
-    --border: #dee2e6;
-  }
-
-  body.dark {
-    --bg: #1e1e1e;
-    --text: #f8f9fa;
-    --card: #2c2c2c;
-    --accent: #ff4d4f;
-    --accent-hover: #e03131;
-    --border: #444;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: "Segoe UI", sans-serif;
-    padding: 20px;
-    max-width: 1000px;
-    margin: auto;
-    background-color: var(--bg);
-    color: var(--text);
-    transition: background 0.3s, color 0.3s;
-  }
-
-  h1 {
-    text-align: center;
-    color: var(--accent);
-    margin-bottom: 25px;
-  }
-
-  label {
-    font-weight: 600;
-    margin-top: 12px;
-    display: block;
-  }
-
-  input {
-    margin-top: 5px;
-    padding: 10px;
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--card);
-    color: var(--text);
-  }
-
-  fieldset {
-    margin-top: 20px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background-color: var(--card);
-    padding: 20px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
-  }
-
-  legend {
-    font-weight: bold;
-    color: var(--accent);
-    padding: 0 10px;
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-  }
-
-  .top-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .top-actions button {
-    margin-left: auto;
-  }
-
-  button {
-    margin: 10px 10px 10px 0;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    background-color: var(--accent);
-    color: white;
-    transition: background-color 0.2s;
-  }
-
-  button:hover {
-    background-color: var(--accent-hover);
-  }
-
-  .btn-excluir {
-    background-color: #6c757d;
-  }
-
-  .btn-excluir:hover {
-    background-color: #495057;
-  }
-
-  #filtro {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    width: 100%;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 25px;
-    background-color: var(--card);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  }
-
-  th, td {
-    border: 1px solid var(--border);
-    padding: 12px;
-    text-align: left;
-  }
-
-  th {
-    background-color: var(--accent);
-    color: #fff;
-    font-weight: bold;
-  }
-
-  @media (max-width: 600px) {
-    th, td {
-      font-size: 14px;
+    :root {
+      --bg: #f5f5f5;
+      --text: #212529;
+      --card: #ffffff;
+      --accent: #dc3545;
+      --accent-hover: #c82333;
+      --border: #dee2e6;
+      --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .top-actions {
-      flex-direction: column;
-      align-items: flex-start;
+    body.dark {
+      --bg: #1e1e1e;
+      --text: #f8f9fa;
+      --card: #2c2c2c;
+      --accent: #ff4d4f;
+      --accent-hover: #e03131;
+      --border: #444;
+      --shadow: 0 4px 8px rgba(255, 255, 255, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1, h2 {
+      color: var(--accent);
+      text-align: center;
+    }
+
+    input {
+      margin-top: 6px;
+      margin-bottom: 16px;
+      padding: 10px;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      box-shadow: var(--shadow);
     }
 
     button {
-      width: 100%;
+      padding: 10px 16px;
+      margin: 5px 5px 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--accent);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background-color 0.3s ease, transform 0.2s;
     }
-  }
-</style>
+
+    button:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.02);
+    }
+
+    fieldset {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      background: var(--card);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    legend {
+      color: var(--accent);
+      font-weight: bold;
+      padding: 0 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px;
+    }
+
+    #telaLogin {
+      text-align: center;
+      margin-top: 80px;
+      padding: 40px;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #telaLogin input {
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    #telaLogin button {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card);
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .app-header h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .app-header .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      color: var(--text);
+    }
+
+    .app-header .user-info i {
+      font-size: 18px;
+      color: var(--accent);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      color: white;
+      font-size: 20px;
+      border: none;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      z-index: 999;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--accent);
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      #logout {
+        float: none;
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div id="telaLogin" style="text-align:center; margin-top: 100px;">
-  <h2>Bem-vindo!</h2>
-  <p>Digite seu nome para continuar:</p>
-  <input id="nomeUsuario" placeholder="Seu nome..." />
-  <button onclick="fazerLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-</div>
-  <div class="top-actions">
-    <h1>Precificador Shopee e Mercado Livre</h1>
-    <button onclick="alternarModo()"><i class="fas fa-adjust"></i> Modo Claro/Escuro</button>
-    <button onclick="fazerLogout()" id="btnLogout" style="display:none"><i class="fas fa-sign-out-alt"></i> Sair</button>
+  <button class="theme-toggle" onclick="alternarModo()">🌙</button>
+  <div id="telaLogin">
+    <h2>Bem-vindo!</h2>
+    <p>Digite seu nome para continuar:</p>
+    <input id="nomeUsuario" placeholder="Seu nome..." />
+    <button onclick="fazerLogin()">Entrar</button>
+  </div>
+  <!-- APLICAÇÃO PRINCIPAL -->
+  <div id="app" style="display:none">
+    <div class="app-header">
+      <h1><i class="fas fa-tags"></i> Precificador Shopee/ML</h1>
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span id="usuarioNomeHeader"></span>
+        <button id="logout" onclick="fazerLogout()" title="Sair">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <label>Nome do Produto:</label>
+    <input type="text" id="nomeProduto" />
+
+    <label>Custo do Produto (R$):</label>
+    <input type="text" id="custoProduto" />
+
+    <fieldset>
+      <legend>Shopee</legend>
+      <div class="form-grid">
+        <div>
+          <label>Comissão (%):</label>
+          <input type="text" id="comissaoShopee" />
+        </div>
+        <div>
+          <label>Taxa Fixa (R$):</label>
+          <input type="text" id="taxaShopee" />
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Mercado Livre</legend>
+      <div class="form-grid">
+        <div>
+          <label>Comissão (%):</label>
+          <input type="text" id="comissaoML" />
+        </div>
+        <div>
+          <label>Taxa Fixa (R$):</label>
+          <input type="text" id="taxaML" />
+        </div>
+      </div>
+    </fieldset>
+
+    <button onclick="calcularSalvar()"><i class="fas fa-save"></i> Calcular e Salvar</button>
+    <button onclick="exportarCSV()"><i class="fas fa-file-csv"></i> Exportar CSV</button>
+    <button onclick="exportarPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Custo</th>
+          <th>Shopee</th>
+          <th>Lucro S.</th>
+          <th>ML</th>
+          <th>Lucro ML</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabela"></tbody>
+    </table>
   </div>
 
-  <label>Filtro por nome do produto:</label>
-  <input type="text" id="filtro" oninput="filtrarTabela()" placeholder="Digite para filtrar...">
-
-  <label>Nome do Produto:</label>
-  <input type="text" id="nomeProduto" />
-
-  <label>Custo do Produto (R$):</label>
-  <input type="text" id="custoProduto" />
-
-  <fieldset>
-    <legend>Shopee</legend>
-    <div class="form-grid">
-      <div>
-        <label>Comissão (%):</label>
-        <input type="text" id="comissaoShopee" />
-      </div>
-      <div>
-        <label>Taxa Fixa (R$):</label>
-        <input type="text" id="taxaShopee" />
-      </div>
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>Mercado Livre</legend>
-    <div class="form-grid">
-      <div>
-        <label>Comissão (%):</label>
-        <input type="text" id="comissaoML" />
-      </div>
-      <div>
-        <label>Taxa Fixa (R$):</label>
-        <input type="text" id="taxaML" />
-      </div>
-    </div>
-  </fieldset>
-
-  <button onclick="calcularSalvar()"><i class="fas fa-save"></i> Calcular e Salvar</button>
-  <button onclick="exportarCSV()"><i class="fas fa-file-csv"></i> Exportar CSV</button>
-  <button onclick="exportarPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
-
-  <table id="tabelaResultados">
-    <thead>
-      <tr>
-        <th>Produto</th>
-        <th>Custo (R$)</th>
-        <th>Shopee (R$)</th>
-        <th>Lucro Shopee</th>
-        <th>Mercado Livre (R$)</th>
-        <th>Lucro ML</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-  const tabela = document.querySelector("#tabelaResultados tbody");
+  if (localStorage.getItem("modo") === "dark") {
+    document.body.classList.add("dark");
+  }
+
+  function alternarModo() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("modo", document.body.classList.contains("dark") ? "dark" : "light");
+  }
+
+  let usuarioAtual = localStorage.getItem("usuario_nome");
   let produtos = [];
   let editandoIndex = -1;
 
@@ -245,8 +295,34 @@
     return parseFloat(String(valor).replace(',', '.')) || 0;
   }
 
+  function fazerLogin() {
+    const nome = document.getElementById("nomeUsuario").value.trim();
+    if (!nome) return alert("Digite seu nome.");
+    usuarioAtual = nome;
+    localStorage.setItem("usuario_nome", nome);
+    iniciarSistema();
+  }
+
+  function fazerLogout() {
+    localStorage.removeItem("usuario_nome");
+    location.reload();
+  }
+
+  function iniciarSistema() {
+    document.getElementById("telaLogin").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    document.getElementById("usuarioNomeHeader").textContent = usuarioAtual;
+    produtos = JSON.parse(localStorage.getItem(`produtos_${usuarioAtual}`) || "[]");
+    restaurarTaxas();
+    renderizarTabela();
+  }
+
+  function salvarProdutos() {
+    localStorage.setItem(`produtos_${usuarioAtual}`, JSON.stringify(produtos));
+  }
+
   function salvarTaxas() {
-    localStorage.setItem("taxas_config", JSON.stringify({
+    localStorage.setItem(`taxas_${usuarioAtual}`, JSON.stringify({
       comissaoShopee: document.getElementById("comissaoShopee").value,
       taxaShopee: document.getElementById("taxaShopee").value,
       comissaoML: document.getElementById("comissaoML").value,
@@ -255,7 +331,7 @@
   }
 
   function restaurarTaxas() {
-    const config = JSON.parse(localStorage.getItem("taxas_config") || "{}");
+    const config = JSON.parse(localStorage.getItem(`taxas_${usuarioAtual}`) || "{}");
     if (config.comissaoShopee) document.getElementById("comissaoShopee").value = config.comissaoShopee;
     if (config.taxaShopee) document.getElementById("taxaShopee").value = config.taxaShopee;
     if (config.comissaoML) document.getElementById("comissaoML").value = config.comissaoML;
@@ -271,7 +347,7 @@
     const comissaoML = sanitize(document.getElementById("comissaoML").value) / 100;
 
     if (!nome || custo <= 0) {
-      alert("Preencha corretamente os campos obrigatórios.");
+      alert("Preencha corretamente os campos.");
       return;
     }
 
@@ -291,43 +367,16 @@
       produtos.push(produto);
     }
 
-    localStorage.setItem("produtos_precificados", JSON.stringify(produtos));
+    salvarProdutos();
     document.getElementById("nomeProduto").value = "";
     document.getElementById("custoProduto").value = "";
-    let usuarioAtual = localStorage.getItem("usuario_nome");
-
-function fazerLogin() {
-  const nome = document.getElementById("nomeUsuario").value.trim();
-  if (!nome) return alert("Digite um nome válido.");
-  usuarioAtual = nome;
-  localStorage.setItem("usuario_nome", nome);
-  document.getElementById("telaLogin").style.display = "none";
-  [...document.body.children].forEach(el => {
-    if (el.id !== "telaLogin") el.style.display = "";
-  });
-  carregarProdutos();
-  renderizarTabela();
-  document.getElementById("btnLogout").style.display = "";
-}
-function fazerLogout() {
-  localStorage.removeItem("usuario_nome");
-  location.reload();
-}
-
-function carregarProdutos() {
-  produtos = JSON.parse(localStorage.getItem(`produtos_${usuarioAtual}`) || "[]");
-}
-
-function salvarProdutos() {
-  localStorage.setItem(`produtos_${usuarioAtual}`, JSON.stringify(produtos));
-}
     renderizarTabela();
   }
 
   function excluirProduto(index) {
-    if (confirm("Deseja realmente excluir este produto?")) {
+    if (confirm("Deseja excluir este produto?")) {
       produtos.splice(index, 1);
-salvarProdutos();
+      salvarProdutos();
       renderizarTabela();
     }
   }
@@ -341,9 +390,10 @@ salvarProdutos();
   }
 
   function renderizarTabela() {
-    tabela.innerHTML = "";
-    produtos.forEach((p, index) => {
-      tabela.innerHTML += `
+    const tbody = document.getElementById("tabela");
+    tbody.innerHTML = "";
+    produtos.forEach((p, i) => {
+      tbody.innerHTML += `
         <tr>
           <td>${p.nome}</td>
           <td>R$ ${p.custo}</td>
@@ -351,9 +401,13 @@ salvarProdutos();
           <td>R$ ${p.lucroShopee}</td>
           <td>R$ ${p.precoML}</td>
           <td>R$ ${p.lucroML}</td>
-          <td>
-            <button onclick="editarProduto(${index})"><i class="fas fa-edit"></i> Editar</button>
-            <button class="btn-excluir" onclick="excluirProduto(${index})"><i class="fas fa-trash-alt"></i> Excluir</button>
+          <td style="white-space: nowrap;">
+            <button onclick="editarProduto(${i})" title="Editar">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="excluirProduto(${i})" title="Excluir">
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </td>
         </tr>`;
     });
@@ -367,107 +421,48 @@ salvarProdutos();
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "produtos_precificados.csv";
+    link.download = `produtos_${usuarioAtual}.csv`;
     link.click();
   }
 
   function exportarPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF("p", "mm", "a4");
-  const margem = 10;
-  const larguraTotal = 190;
-  const colunas = ["Produto", "Custo", "Shopee", "Lucro S.", "ML", "Lucro ML"];
-  const larguraColuna = larguraTotal / colunas.length;
-  let y = 20;
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const margem = 10;
+    const largura = 190 / 6;
+    let y = 20;
 
-  // Título
-  doc.setFontSize(16);
-  doc.setTextColor(220, 53, 69);
-  doc.text("Relatório de Produtos Precificados", margem, 15);
+    doc.setFontSize(14);
+    doc.setTextColor(220, 53, 69);
+    doc.text(`Produtos de ${usuarioAtual}`, margem, 10);
 
-  // Cabeçalho
-  doc.setFillColor(220, 53, 69);
-  doc.setTextColor(255, 255, 255);
-  colunas.forEach((titulo, i) => {
-    doc.rect(margem + i * larguraColuna, y, larguraColuna, 10, "F");
-    doc.text(titulo, margem + i * larguraColuna + 2, y + 7);
-  });
-
-  y += 10;
-
-  // Conteúdo
-  doc.setFontSize(11);
-  doc.setTextColor(0, 0, 0);
-
-  produtos.forEach((p, index) => {
-    const dados = [
-      p.nome.length > 15 ? p.nome.substring(0, 15) + "…" : p.nome,
-      `R$ ${p.custo}`,
-      `R$ ${p.precoShopee}`,
-      `R$ ${p.lucroShopee}`,
-      `R$ ${p.precoML}`,
-      `R$ ${p.lucroML}`
-    ];
-
-    dados.forEach((dado, i) => {
-      doc.text(dado, margem + i * larguraColuna + 2, y + 6);
+    const colunas = ["Produto", "Custo", "Shopee", "Lucro S.", "ML", "Lucro ML"];
+    doc.setFillColor(220, 53, 69);
+    doc.setTextColor(255, 255, 255);
+    colunas.forEach((t, i) => {
+      doc.rect(margem + i * largura, y, largura, 10, "F");
+      doc.text(t, margem + i * largura + 2, y + 7);
     });
 
-    y += 10;
-    if (y > 280) {
-      doc.addPage();
-      y = 20;
-    }
-  });
+    y += 12;
+    doc.setTextColor(0, 0, 0);
 
-  doc.save("produtos_precificados.pdf");
-}
-
-  function alternarModo() {
-    document.body.classList.toggle("dark");
-    localStorage.setItem("modo_escuro", document.body.classList.contains("dark") ? "1" : "0");
-  }
-
-  function restaurarModo() {
-    const escuro = localStorage.getItem("modo_escuro");
-    if (escuro === "1") {
-      document.body.classList.add("dark");
-    }
-  }
-
-  function filtrarTabela() {
-    const filtro = document.getElementById("filtro").value.toLowerCase();
-    const linhas = tabela.querySelectorAll("tr");
-    linhas.forEach(linha => {
-      const nome = linha.children[0]?.textContent?.toLowerCase() || "";
-      linha.style.display = nome.includes(filtro) ? "" : "none";
+    produtos.forEach((p, i) => {
+      const dados = [p.nome, p.custo, p.precoShopee, p.lucroShopee, p.precoML, p.lucroML];
+      dados.forEach((dado, j) => {
+        doc.text(`${dado}`, margem + j * largura + 2, y);
+      });
+      y += 8;
+      if (y > 280) {
+        doc.addPage();
+        y = 20;
+      }
     });
+
+    doc.save(`produtos_${usuarioAtual}.pdf`);
   }
 
-restaurarModo();
-restaurarTaxas();
-
-if (!usuarioAtual) {
-  document.getElementById("telaLogin").style.display = "block";
-  [...document.body.children].forEach(el => {
-    if (el.id !== "telaLogin") el.style.display = "none";
-  });
-} else {
-  document.getElementById("btnLogout").style.display = "";
-  document.getElementById("telaLogin").style.display = "none";
-  [...document.body.children].forEach(el => {
-    if (el.id !== "telaLogin") el.style.display = "";
-  });
-  carregarProdutos();
-  renderizarTabela();
-}
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('Service Worker registrado'))
-      .catch(err => console.error('Erro no SW:', err));
-  }
+  if (usuarioAtual) iniciarSistema();
 </script>
 </body>
 </html>
