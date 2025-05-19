@@ -169,9 +169,16 @@
 </style>
 </head>
 <body>
+  <div id="telaLogin" style="text-align:center; margin-top: 100px;">
+  <h2>Bem-vindo!</h2>
+  <p>Digite seu nome para continuar:</p>
+  <input id="nomeUsuario" placeholder="Seu nome..." />
+  <button onclick="fazerLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+</div>
   <div class="top-actions">
     <h1>Precificador Shopee e Mercado Livre</h1>
     <button onclick="alternarModo()"><i class="fas fa-adjust"></i> Modo Claro/Escuro</button>
+    <button onclick="fazerLogout()" id="btnLogout" style="display:none"><i class="fas fa-sign-out-alt"></i> Sair</button>
   </div>
 
   <label>Filtro por nome do produto:</label>
@@ -231,7 +238,7 @@
   </table>
 <script>
   const tabela = document.querySelector("#tabelaResultados tbody");
-  let produtos = JSON.parse(localStorage.getItem("produtos_precificados") || "[]");
+  let produtos = [];
   let editandoIndex = -1;
 
   function sanitize(valor) {
@@ -287,13 +294,39 @@
     localStorage.setItem("produtos_precificados", JSON.stringify(produtos));
     document.getElementById("nomeProduto").value = "";
     document.getElementById("custoProduto").value = "";
+    let usuarioAtual = localStorage.getItem("usuario_nome");
+
+function fazerLogin() {
+  const nome = document.getElementById("nomeUsuario").value.trim();
+  if (!nome) return alert("Digite um nome válido.");
+  usuarioAtual = nome;
+  localStorage.setItem("usuario_nome", nome);
+  document.getElementById("telaLogin").style.display = "none";
+  document.querySelector("body > *:not(#telaLogin)").style.display = "";
+  carregarProdutos();
+  renderizarTabela();
+  document.getElementById("btnLogout").style.display = "";
+}
+
+function fazerLogout() {
+  localStorage.removeItem("usuario_nome");
+  location.reload();
+}
+
+function carregarProdutos() {
+  produtos = JSON.parse(localStorage.getItem(`produtos_${usuarioAtual}`) || "[]");
+}
+
+function salvarProdutos() {
+  localStorage.setItem(`produtos_${usuarioAtual}`, JSON.stringify(produtos));
+}
     renderizarTabela();
   }
 
   function excluirProduto(index) {
     if (confirm("Deseja realmente excluir este produto?")) {
       produtos.splice(index, 1);
-      localStorage.setItem("produtos_precificados", JSON.stringify(produtos));
+salvarProdutos();
       renderizarTabela();
     }
   }
@@ -410,9 +443,19 @@
     });
   }
 
-  renderizarTabela();
-  restaurarTaxas();
   restaurarModo();
+restaurarTaxas();
+
+if (!usuarioAtual) {
+  document.getElementById("telaLogin").style.display = "block";
+  document.querySelector("body > *:not(#telaLogin)").style.display = "none";
+} else {
+  document.getElementById("btnLogout").style.display = "";
+  document.getElementById("telaLogin").style.display = "none";
+  document.querySelector("body > *:not(#telaLogin)").style.display = "";
+  carregarProdutos();
+  renderizarTabela();
+}
 </script>
 <script>
   if ('serviceWorker' in navigator) {
